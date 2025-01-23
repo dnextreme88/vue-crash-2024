@@ -1,47 +1,55 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+  import { ref } from 'vue';
+
+  // ref is basically setting the initial state of the data
+  // Use ref('') for blank values
+  const name = ref('John Doe');
+  const status = ref('active');
+  const tasks = ref(['Task One', 'Task Two']);
+  const newTask = ref('');
+
+  const toggleStatus = () => {
+    if (status.value === 'active') {
+      status.value = 'pending';
+    } else if (status.value === 'pending') {
+      status.value = 'inactive';
+    } else {
+      status.value = 'active';
+    }
+  }
+
+  const addTask = () => {
+    if (newTask.value.trim() !== '') {
+      tasks.value.push(newTask.value); // Add to array
+      newTask.value = ''; // Set it back to blank
+    }
+  }
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <h1>Vue Jobs</h1>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+  <p v-if="status === 'active'">User is active</p>
+  <p v-else-if="status === 'pending'">User is pending</p>
+  <p v-else="status === 'inactive'">User is inactive</p>
 
-  <main>
-    <TheWelcome />
-  </main>
+  <button @click="toggleStatus">Change Status</button>
+
+  <!-- .prevent is basically adding e.preventDefault() from vanilla JS -->
+  <form @submit.prevent="addTask">
+    <label for="newTask">Add Task</label>
+    <input type="text" id="newTask" name="newTask" v-model="newTask" />
+    <button type="submit">Submit</button>
+  </form>
+
+  <ul>
+    <li v-for="(task, index) in tasks" :key="task">{{ task }}</li>
+  </ul>
 </template>
 
+<!-- scoped means that the styles only apply to this component -->
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  h1 {
+    color: red;
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
